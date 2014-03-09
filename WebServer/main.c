@@ -14,37 +14,48 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
 
-#include "openssl/aes.h"
+#include "SecureClient.h"
 
 int main(int argc, const char * argv[])
 {
 
-	
-	unsigned char *in = (unsigned char *)"12312312312321";
-    
-	unsigned char * enc_out = malloc(80*sizeof(char));
-    unsigned char * dec_out = malloc(80*sizeof(char));
-	
-	
-	AES_KEY key;
-	unsigned char *userkey = (unsigned char *)"123";
-	AES_set_encrypt_key(userkey, 256, &key);
-	
-	AES_encrypt(in, enc_out, &key);
-	
-	printf("out: %s", enc_out);
-	
-	AES_set_decrypt_key(userkey, 256, &key);
-	AES_decrypt(enc_out, dec_out, &key);
-	printf("in: %s", dec_out);
-	
 	// insert code here...
 	printf("Hello, World!\n");
 	
-	signal(SIGCHLD,SIG_IGN);	/* to avoid zombies */
+	SESSION_KEY public_key;
+	SESSION_KEY private_key;
 	
-	startServer(htons(7005));
+	keypair_gen(&public_key, &private_key);
+
+	session_key_dump(&public_key);
+	session_key_dump(&private_key);
+	
+	SECURE_CLIENT *alice = malloc(sizeof(SECURE_CLIENT));
+	alice->label = "Alice";
+	alice->port = htons(7007);
+	alice->stopped = malloc(sizeof(int));
+	
+	alice->context = malloc(sizeof(CLIENT_CONTEXT));
+	alice->context->public_key = &public_key;
+	
+	SECURE_CLIENT *trent = malloc(sizeof(SECURE_CLIENT));
+	trent->label = "Trent";
+	trent->port = htons(7008);
+	trent->stopped = malloc(sizeof(int));
+
+	trent->context = malloc(sizeof(CLIENT_CONTEXT));
+	trent->context->private_key = &private_key;
+	
+	client_start(alice);
+	client_start(trent);
+	
+	SESSION_KEY alicesSessionKey = session_key_create(128);
+	
+	wmf_alice_to_trent(alice, trent, time(NULL), "Bob", alicesSessionKey);
+	
+	sleep(100);
 	
     return 0;
 }
