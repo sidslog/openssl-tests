@@ -11,6 +11,7 @@
 		3B2468A618CDA4CE000E7711 /* OpenSSLHelper.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B24689F18CDA4CE000E7711 /* OpenSSLHelper.c */; };
 		3B2468A718CDA4CE000E7711 /* SecureClient.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B2468A118CDA4CE000E7711 /* SecureClient.c */; };
 		3B2468A818CDA4CE000E7711 /* SecurePacket.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B2468A318CDA4CE000E7711 /* SecurePacket.c */; };
+		3B2468AB18CDC31F000E7711 /* WideMouthFrog.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B2468AA18CDC31F000E7711 /* WideMouthFrog.c */; };
 		3B2724CE18CC6A36006C00C2 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B2724C718CC68AF006C00C2 /* libcrypto.a */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +52,8 @@
 		3B2468A218CDA4CE000E7711 /* SecureClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SecureClient.h; sourceTree = "<group>"; };
 		3B2468A318CDA4CE000E7711 /* SecurePacket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SecurePacket.c; sourceTree = "<group>"; };
 		3B2468A418CDA4CE000E7711 /* SecurePacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SecurePacket.h; sourceTree = "<group>"; };
+		3B2468A918CDC30E000E7711 /* WideMouthFrog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WideMouthFrog.h; sourceTree = "<group>"; };
+		3B2468AA18CDC31F000E7711 /* WideMouthFrog.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WideMouthFrog.c; sourceTree = "<group>"; };
 		3B2724C118CC68A8006C00C2 /* openssl.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openssl.xcodeproj; path = "openssl-xcode/openssl.xcodeproj"; sourceTree = "<group>"; };
 		3B8CDCFE18C370DB00107865 /* OpenSSLTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OpenSSLTests; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -77,6 +80,8 @@
 				3B2468A218CDA4CE000E7711 /* SecureClient.h */,
 				3B2468A318CDA4CE000E7711 /* SecurePacket.c */,
 				3B2468A418CDA4CE000E7711 /* SecurePacket.h */,
+				3B2468A918CDC30E000E7711 /* WideMouthFrog.h */,
+				3B2468AA18CDC31F000E7711 /* WideMouthFrog.c */,
 			);
 			path = OpenSSLTests;
 			sourceTree = "<group>";
@@ -181,6 +186,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B2468AB18CDC31F000E7711 /* WideMouthFrog.c in Sources */,
 				3B2468A618CDA4CE000E7711 /* OpenSSLHelper.c in Sources */,
 				3B2468A518CDA4CE000E7711 /* main.c in Sources */,
 				3B2468A818CDA4CE000E7711 /* SecurePacket.c in Sources */,

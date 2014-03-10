@@ -178,4 +178,74 @@ void data_encode(BYTE_PTR data, ssize_t data_length, SESSION_KEY *public_key, BY
 	*iv = iv_data;
 }
 
+void data_encode_aes(BYTE_PTR data, ssize_t data_length, SESSION_KEY *key, BYTE_PTR *enc_msg, uint32_t *enc_msg_length) {
+	EVP_CIPHER_CTX *aesEncryptCtx;
+	aesEncryptCtx = (EVP_CIPHER_CTX*)malloc(sizeof(EVP_CIPHER_CTX));
+	EVP_CIPHER_CTX_init(aesEncryptCtx);
+	
+	if (!EVP_EncryptInit(aesEncryptCtx, EVP_aes_128_cbc(), key->data, NULL)) {
+		perror("EVP_EncryptInit");
+		return;
+	}
+	
+	uint32_t encMsgLen = 0;
+    int blockLen  = 0;
+	
+	BYTE_PTR out = malloc(data_length + EVP_CIPHER_CTX_block_size(aesEncryptCtx) - 1);
+	
+	if (!EVP_EncryptUpdate(aesEncryptCtx, out, &blockLen, data, (int) data_length)) {
+		perror("EVP_EncryptInit");
+		return;
+	}
+	
+	encMsgLen += blockLen;
+	
+	if (!EVP_EncryptFinal(aesEncryptCtx, out + encMsgLen, &blockLen)) {
+		perror("EVP_EncryptInit");
+		return;
+	}
+	
+	EVP_CIPHER_CTX_cleanup(aesEncryptCtx);
+	
+	encMsgLen += blockLen;
+	*enc_msg = out;
+	*enc_msg_length = encMsgLen;
+}
+
+
+void data_decode_aes(BYTE_PTR data, ssize_t data_length, SESSION_KEY *key, BYTE_PTR *enc_msg, uint32_t *enc_msg_length) {
+	EVP_CIPHER_CTX *aesEncryptCtx;
+	aesEncryptCtx = (EVP_CIPHER_CTX*)malloc(sizeof(EVP_CIPHER_CTX));
+	EVP_CIPHER_CTX_init(aesEncryptCtx);
+	
+	if (!EVP_DecryptInit(aesEncryptCtx, EVP_aes_128_cbc(), key->data, NULL)) {
+		perror("EVP_EncryptInit");
+		return;
+	}
+	
+	uint32_t encMsgLen = 0;
+    int blockLen  = 0;
+	
+	BYTE_PTR out = malloc(data_length + EVP_CIPHER_CTX_block_size(aesEncryptCtx));
+	
+	if (!EVP_DecryptUpdate(aesEncryptCtx, out, &blockLen, data, (int) data_length)) {
+		perror("EVP_EncryptInit");
+		return;
+	}
+	
+	encMsgLen += blockLen;
+	
+	if (!EVP_DecryptFinal(aesEncryptCtx, out + encMsgLen, &blockLen)) {
+		perror("EVP_EncryptInit");
+		return;
+	}
+
+	EVP_CIPHER_CTX_cleanup(aesEncryptCtx);
+
+	encMsgLen += blockLen;
+	*enc_msg = out;
+	*enc_msg_length = encMsgLen;
+}
+
+
 #pragma clang diagnostic pop

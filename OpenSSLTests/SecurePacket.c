@@ -142,3 +142,46 @@ void bytes_dump(BYTE_PTR data, ssize_t length) {
 	printf("\n");
 }
 
+uint32_t command_args_from_data(BYTE_PTR arg, uint32_t arg_length, PACKET_ARG ***newArgs) {
+	uint32_t read_length = 0;
+	
+	int i = 0;
+	if (arg_length > 0) {
+		uint32_t l;
+		memcpy(&l, arg + read_length, sizeof(uint32_t));
+		read_length += sizeof(uint32_t);
+		
+		PACKET_ARG **args = malloc(sizeof(PACKET_ARG *) * l);
+		while (read_length < arg_length) {
+			uint32_t l;
+			memcpy(&l, arg + read_length, sizeof(uint32_t));
+			read_length += sizeof(uint32_t);
+			
+			BYTE_PTR p = malloc(l * sizeof(unsigned char));
+			memcpy(p, arg + read_length, l);
+			read_length += l;
+			
+			PACKET_ARG *a = malloc(sizeof(PACKET_ARG));
+			a->arg = p;
+			a->length = l;
+			args[i] = a;
+			i ++;
+		}
+		*newArgs = args;
+	}
+	return i;
+}
+
+void command_data_add_arg(BYTE_PTR *data, uint32_t *data_length, BYTE_PTR arg, uint32_t arg_length) {
+	if (*data == NULL) {
+		*data = malloc(sizeof(void *) * arg_length + sizeof(uint32_t));
+	} else {
+		*data = realloc(*data, *data_length + arg_length + sizeof(uint32_t));
+	}
+	
+	memcpy(*data + *data_length, &arg_length, sizeof(uint32_t));
+	memcpy(*data + *data_length + sizeof(uint32_t), arg, arg_length);
+	
+	*data_length += sizeof(uint32_t) + arg_length;
+}
+

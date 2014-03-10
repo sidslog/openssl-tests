@@ -25,6 +25,7 @@
 #pragma mark - commands
 
 #define COMMAND_WMF_1 1
+#define COMMAND_WMF_2 2
 
 
 #pragma mark - packets
@@ -46,24 +47,6 @@ struct session_key_st {
 
 typedef struct session_key_st SESSION_KEY;
 
-
-struct client_context_st {
-	SESSION_KEY *public_key;
-	SESSION_KEY *private_key;
-	SESSION_KEY *session_key;
-};
-
-typedef struct client_context_st CLIENT_CONTEXT;
-
-struct secure_client_st {
-	char *label;
-	in_port_t port;
-	pthread_t thread;
-	volatile int *stopped;
-	CLIENT_CONTEXT *context;
-};
-
-typedef struct secure_client_st SECURE_CLIENT;
 
 
 struct packet_arg_st {
@@ -89,4 +72,7 @@ PACKET* packet_read(int socket);
 void packet_write(int socket, PACKET *packet);
 
 void bytes_dump(BYTE_PTR data, ssize_t length);
+
+void command_data_add_arg(BYTE_PTR *data, uint32_t *data_length, BYTE_PTR arg, uint32_t arg_length);
+uint32_t command_args_from_data(BYTE_PTR arg, uint32_t arg_length, PACKET_ARG ***newArgs);
 #endif

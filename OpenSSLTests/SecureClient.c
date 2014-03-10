@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <netdb.h>
 #include <pthread.h>
+#include <time.h>
 
 #include "OpenSSLHelper.h"
 
@@ -54,6 +55,7 @@ void* clientThread(void *arg) {
 	int new_socket;
 	
 	*client->stopped = 0;
+	client->socket = sock;
 	
 	for (;;) {
 		int stopped = *client->stopped;
@@ -72,29 +74,10 @@ void* clientThread(void *arg) {
 		}
 		
 		PACKET *packet = packet_read(new_socket);
+		client->func(packet, client);
 		
-		SESSION_KEY *key = client->context->private_key;
-		
-		BYTE_PTR iv = packet->args[1]->arg;
-		uint32_t iv_length = packet->args[1]->length;
-		
-		BYTE_PTR ek = packet->args[2]->arg;
-		uint32_t ek_length = packet->args[2]->length;
-		
-		BYTE_PTR msg = packet->args[3]->arg;
-		uint32_t msg_length = packet->args[3]->length;
-		
-		
-		BYTE_PTR out;
-		uint32_t out_length;
-		
-		data_decode(msg, msg_length, key, iv, iv_length, ek, ek_length, &out, &out_length);
-		
-		printf("decoded data:\n");
-		bytes_dump(out, out_length);
-		
-		free(out);
-		
+		packet_free(packet);
+		close(new_socket);
 	}
 
 	close(sock);
@@ -108,7 +91,20 @@ int client_start(SECURE_CLIENT *client) {
 
 void client_stop(SECURE_CLIENT *client) {
 	*client->stopped = 1;
+	close(client->socket);
 }
+
+SECURE_CLIENT *client_by_label(char *label) {
+	for (int i = 0; i < clients_count; i ++) {
+		SECURE_CLIENT *client = clients[i];
+		if (strcmp(client->label, label) == 0) {
+			return client;
+		}
+	}
+	perror("client not found");
+	return NULL;
+}
+
 
 int socket_connect_to_client(SECURE_CLIENT *client) {
 	struct hostent     *he;
@@ -141,50 +137,3 @@ int socket_connect_to_client(SECURE_CLIENT *client) {
 
 
 
-
-void wmf_alice_to_trent(SECURE_CLIENT *alice, SECURE_CLIENT *trent, TIMESTAMP time, CLIENT_NAME bob_name, SESSION_KEY key) {
-	PACKET *packet = packet_create(COMMAND_WMF_1);
-	
-	packet_add_arg(packet, (uint32_t)strlen(alice->label), (BYTE_PTR )alice->label);
-	
-	int buf_length = (int) (sizeof(time_t) + sizeof(uint32_t) + strlen(bob_name) * sizeof(char) + sizeof(uint32_t) + key.length * sizeof(unsigned char));
-	
-	BYTE_PTR buf = malloc(buf_length);
-	
-	uint32_t bob_name_length = (uint32_t) strlen(bob_name);
-	
-	memcpy(buf, &time, sizeof(time_t));
-	memcpy(buf + sizeof(time_t), &bob_name_length, sizeof(uint32_t));
-	memcpy(buf + sizeof(time_t) + bob_name_length, (BYTE_PTR )bob_name, strlen(bob_name));
-	memcpy(buf + sizeof(time_t) + bob_name_length + strlen(bob_name), &key.length, sizeof(uint32_t));
-	memcpy(buf + sizeof(time_t) + bob_name_length + strlen(bob_name) + sizeof(uint32_t), key.data, key.length);
-	
-	
-	BYTE_PTR encrypted;
-	BYTE_PTR iv;
-	BYTE_PTR ek;
-	uint32_t encrypted_length;
-	uint32_t iv_length;
-	uint32_t ek_length;
-	
-	data_encode(buf, buf_length, alice->context->public_key, &encrypted, &encrypted_length, &iv, &iv_length, &ek, &ek_length);
-	
-	bytes_dump(encrypted, encrypted_length);
-	
-	packet_add_arg(packet, iv_length, iv);
-	packet_add_arg(packet, ek_length, ek);
-	packet_add_arg(packet, encrypted_length, encrypted);
-	
-	int sock = socket_connect_to_client(trent);
-	
-	packet_write(sock, packet);
-	
-end:
-	free(encrypted);
-	free(iv);
-	free(ek);
-	free(buf);
-	
-	close(sock);
-	
-}

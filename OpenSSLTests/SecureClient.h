@@ -11,11 +11,39 @@
 
 #include "SecurePacket.h"
 
+
+struct client_context_st {
+	SESSION_KEY *public_key;
+	SESSION_KEY *private_key;
+	SESSION_KEY *session_key;
+};
+
+typedef struct client_context_st CLIENT_CONTEXT;
+
+typedef void (*rcv_func)(PACKET *, void *);
+
+struct secure_client_st {
+	char *label;
+	in_port_t port;
+	pthread_t thread;
+	volatile int *stopped;
+	CLIENT_CONTEXT *context;
+	rcv_func func;
+	int socket;
+};
+
+typedef struct secure_client_st SECURE_CLIENT;
+
+// clients storage
+SECURE_CLIENT **clients;
+int clients_count;
+
+// clients actions
 int client_start(SECURE_CLIENT *client);
 void client_stop(SECURE_CLIENT *client);
 
-#pragma mark - Wide-Mouth Frog
-
-void wmf_alice_to_trent(SECURE_CLIENT *alice, SECURE_CLIENT *trent, TIMESTAMP time, CLIENT_NAME bob_name, SESSION_KEY key);
+// helpers
+SECURE_CLIENT *client_by_label(char *label);
+int socket_connect_to_client(SECURE_CLIENT *client);
 
 #endif
