@@ -21,9 +21,10 @@ uint32_t read_i(int socket) {
 	
 	if (read_count != sizeof(uint32_t)) {
 		perror("wrong command\n");
+		free(command);
 		return -1;
 	}
-	
+
 	int result = *command;
 	free(command);
 	return result;
@@ -34,6 +35,7 @@ unsigned char* read_b(int socket, int length) {
 	ssize_t read_count = recv(socket, buf, length, 0);
 	if (read_count != length) {
 		perror("wrong data\n");
+		free(buf);
 		return NULL;
 	}
 	return buf;
@@ -68,7 +70,7 @@ PACKET* packet_read(int socket) {
 	p->command = read_i(socket);
 	p->args_count = read_i(socket);
 	
-	PACKET_ARG **args = malloc(p->args_count * sizeof(PACKET_ARG));
+	PACKET_ARG **args = malloc(p->args_count * sizeof(PACKET_ARG*));
 	
 	for (uint32_t i = 0; i < p->args_count; i ++) {
 		PACKET_ARG *arg = malloc(sizeof(PACKET_ARG));
@@ -123,9 +125,9 @@ PACKET_ARG* arg_create(int length, BYTE_PTR data) {
 void packet_add_arg(PACKET *packet, uint32_t arg_length, BYTE_PTR arg_data) {
 	packet->args_count += 1;
 	if (packet -> args) {
-		packet->args = realloc(packet->args, packet->args_count * sizeof(PACKET_ARG));
+		packet->args = realloc(packet->args, packet->args_count * sizeof(PACKET_ARG*));
 	} else {
-		packet->args = malloc(sizeof(PACKET_ARG));
+		packet->args = malloc(sizeof(PACKET_ARG*));
 	}
 	packet->args[packet->args_count - 1] = arg_create(arg_length, arg_data);
 }

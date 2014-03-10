@@ -45,7 +45,7 @@ void wmf_proto_example() {
 	
 	SECURE_CLIENT *bob = malloc(sizeof(SECURE_CLIENT));
 	bob->label = "Bob";
-	bob->port = htons(7009);
+	bob->port = htons(7010);
 	bob->stopped = malloc(sizeof(int));
 	bob->func = wmf_bob;
 	
@@ -87,7 +87,7 @@ void wmf_alice_to_trent(SECURE_CLIENT *alice, SECURE_CLIENT *trent) {
 	packet_add_arg(packet, (uint32_t)strlen(alice->label), (BYTE_PTR )alice->label);
 	
 	
-	BYTE_PTR buf = malloc(sizeof(uint32_t));
+	BYTE_PTR buf = malloc(sizeof(uint32_t) * sizeof(unsigned char));
 	uint32_t buf_length = 0;
 	
 	uint32_t bob_name_length = (uint32_t) strlen(bob_name);
@@ -168,7 +168,7 @@ void wmf_trent(PACKET *packet, void *self) {
 			
 			SECURE_CLIENT *bob = client_by_label(bob_name);
 			
-			BYTE_PTR buf = malloc(sizeof(uint32_t));
+			BYTE_PTR buf = malloc(sizeof(uint32_t) * sizeof(unsigned char));
 			uint32_t buf_length = 0;
 			
 			uint32_t alice_name_length = (uint32_t) strlen(alice_name);

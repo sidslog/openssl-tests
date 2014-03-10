@@ -83,7 +83,7 @@ void data_decode(BYTE_PTR encMsg, uint32_t encMsgLen, SESSION_KEY *key, BYTE_PTR
     if (!EVP_PKEY_assign_RSA(pkey, rsa))
     {
         perror("EVP_PKEY_assign_RSA");
-		return;
+		goto end;
     }
 	
 	*decMsg = (unsigned char*)malloc(encMsgLen + ivl);
@@ -105,7 +105,9 @@ void data_decode(BYTE_PTR encMsg, uint32_t encMsgLen, SESSION_KEY *key, BYTE_PTR
     }
     decLen += blockLen;
 	
+end:
     EVP_CIPHER_CTX_cleanup(rsaDecryptCtx);
+	free(rsaDecryptCtx);
 	*dec_msg_length	= (uint32_t) decLen;
 }
 
@@ -142,26 +144,26 @@ void data_encode(BYTE_PTR data, ssize_t data_length, SESSION_KEY *public_key, BY
 	*ekl = EVP_PKEY_size(pkey);
 	
     *ek = (unsigned char*)malloc(*ekl);
+    BYTE_PTR encMsg = malloc(data_length + EVP_MAX_IV_LENGTH);
     BYTE_PTR iv_data = (unsigned char*)malloc(EVP_MAX_IV_LENGTH);
-    if(ek == NULL || iv == NULL) {
+    if(*ek == NULL || iv_data == NULL) {
 		perror("malloc error");
-		return	;
+		goto end;
 	};
 	
-    BYTE_PTR encMsg = malloc(data_length + EVP_MAX_IV_LENGTH);
     if(encMsg == NULL) {
 		perror("malloc2 error");
-		return	;
+		goto end;
 	}
 	
     if(!EVP_SealInit(rsaEncryptCtx, EVP_aes_128_cbc(), ek, (int*) ekl, iv_data, &pkey, 1)) {
 		perror("EVP_SealInit");
-        return;
+        goto end;
     }
 	
     if(!EVP_SealUpdate(rsaEncryptCtx, encMsg + encMsgLen, (int*)&blockLen, (const unsigned char*)data, (int)data_length)) {
 		perror("EVP_SealUpdate");
-        return;
+        goto end;
     }
     encMsgLen += blockLen;
 	
@@ -172,7 +174,8 @@ void data_encode(BYTE_PTR data, ssize_t data_length, SESSION_KEY *public_key, BY
     encMsgLen += blockLen;
 	
     EVP_CIPHER_CTX_cleanup(rsaEncryptCtx);
-	
+end:
+	free(rsaEncryptCtx);
 	*enc_msg = encMsg;
 	*enc_msg_length = encMsgLen;
 	*iv = iv_data;
@@ -183,33 +186,39 @@ void data_encode_aes(BYTE_PTR data, ssize_t data_length, SESSION_KEY *key, BYTE_
 	aesEncryptCtx = (EVP_CIPHER_CTX*)malloc(sizeof(EVP_CIPHER_CTX));
 	EVP_CIPHER_CTX_init(aesEncryptCtx);
 	
-	if (!EVP_EncryptInit(aesEncryptCtx, EVP_aes_128_cbc(), key->data, NULL)) {
-		perror("EVP_EncryptInit");
-		return;
-	}
-	
 	uint32_t encMsgLen = 0;
     int blockLen  = 0;
+	
+
+	if (!EVP_EncryptInit(aesEncryptCtx, EVP_aes_128_cbc(), key->data, NULL)) {
+		perror("EVP_EncryptInit");
+		goto end;
+	}
 	
 	BYTE_PTR out = malloc(data_length + EVP_CIPHER_CTX_block_size(aesEncryptCtx) - 1);
 	
 	if (!EVP_EncryptUpdate(aesEncryptCtx, out, &blockLen, data, (int) data_length)) {
 		perror("EVP_EncryptInit");
-		return;
+		free(out);
+		goto end;
 	}
 	
 	encMsgLen += blockLen;
 	
 	if (!EVP_EncryptFinal(aesEncryptCtx, out + encMsgLen, &blockLen)) {
 		perror("EVP_EncryptInit");
-		return;
+		free(out);
+		goto end;
 	}
 	
 	EVP_CIPHER_CTX_cleanup(aesEncryptCtx);
 	
-	encMsgLen += blockLen;
 	*enc_msg = out;
+	encMsgLen += blockLen;
 	*enc_msg_length = encMsgLen;
+
+end:
+	free(aesEncryptCtx);
 }
 
 
@@ -218,33 +227,39 @@ void data_decode_aes(BYTE_PTR data, ssize_t data_length, SESSION_KEY *key, BYTE_
 	aesEncryptCtx = (EVP_CIPHER_CTX*)malloc(sizeof(EVP_CIPHER_CTX));
 	EVP_CIPHER_CTX_init(aesEncryptCtx);
 	
-	if (!EVP_DecryptInit(aesEncryptCtx, EVP_aes_128_cbc(), key->data, NULL)) {
-		perror("EVP_EncryptInit");
-		return;
-	}
-	
 	uint32_t encMsgLen = 0;
     int blockLen  = 0;
 	
-	BYTE_PTR out = malloc(data_length + EVP_CIPHER_CTX_block_size(aesEncryptCtx));
 	
+	if (!EVP_DecryptInit(aesEncryptCtx, EVP_aes_128_cbc(), key->data, NULL)) {
+		perror("EVP_EncryptInit");
+		goto end;
+	}
+	
+	BYTE_PTR out = malloc(data_length + EVP_CIPHER_CTX_block_size(aesEncryptCtx));
+
 	if (!EVP_DecryptUpdate(aesEncryptCtx, out, &blockLen, data, (int) data_length)) {
 		perror("EVP_EncryptInit");
-		return;
+		free(out);
+		goto end;
 	}
 	
 	encMsgLen += blockLen;
 	
 	if (!EVP_DecryptFinal(aesEncryptCtx, out + encMsgLen, &blockLen)) {
 		perror("EVP_EncryptInit");
-		return;
+		free(out);
+		goto end;
 	}
 
 	EVP_CIPHER_CTX_cleanup(aesEncryptCtx);
 
-	encMsgLen += blockLen;
 	*enc_msg = out;
+	encMsgLen += blockLen;
 	*enc_msg_length = encMsgLen;
+	
+end:
+	free(aesEncryptCtx);
 }
 
 
