@@ -1,12 +1,11 @@
 //
 //  main.c
-//  WebServer
+//  OpenSSLTests
 //
 //  Created by sidslog on 02.03.14.
 //
 //
 
-#include "Server.h"
 #include <signal.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -16,7 +15,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#include <time.h>
 #include "SecureClient.h"
+#include "OpenSSLHelper.h"
 
 int main(int argc, const char * argv[])
 {

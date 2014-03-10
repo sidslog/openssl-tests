@@ -29,8 +29,42 @@
 
 #pragma mark - packets
 
+
+
 typedef unsigned char * BYTE_PTR;
 typedef const unsigned char * CONST_BYTE_PTR;
+
+typedef time_t TIMESTAMP;
+typedef char * CLIENT_NAME;
+
+
+
+struct session_key_st {
+	ssize_t length;
+	BYTE_PTR data;
+};
+
+typedef struct session_key_st SESSION_KEY;
+
+
+struct client_context_st {
+	SESSION_KEY *public_key;
+	SESSION_KEY *private_key;
+	SESSION_KEY *session_key;
+};
+
+typedef struct client_context_st CLIENT_CONTEXT;
+
+struct secure_client_st {
+	char *label;
+	in_port_t port;
+	pthread_t thread;
+	volatile int *stopped;
+	CLIENT_CONTEXT *context;
+};
+
+typedef struct secure_client_st SECURE_CLIENT;
+
 
 struct packet_arg_st {
 	BYTE_PTR arg;

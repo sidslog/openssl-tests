@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3B24684718CCA1DE000E7711 /* SecureClient.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B24684618CCA1DE000E7711 /* SecureClient.c */; };
-		3B24684A18CCB4F1000E7711 /* SecurePacket.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B24684918CCB4F1000E7711 /* SecurePacket.c */; };
+		3B2468A518CDA4CE000E7711 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B24689E18CDA4CE000E7711 /* main.c */; };
+		3B2468A618CDA4CE000E7711 /* OpenSSLHelper.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B24689F18CDA4CE000E7711 /* OpenSSLHelper.c */; };
+		3B2468A718CDA4CE000E7711 /* SecureClient.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B2468A118CDA4CE000E7711 /* SecureClient.c */; };
+		3B2468A818CDA4CE000E7711 /* SecurePacket.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B2468A318CDA4CE000E7711 /* SecurePacket.c */; };
 		3B2724CE18CC6A36006C00C2 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B2724C718CC68AF006C00C2 /* libcrypto.a */; };
-		3B8CDD0218C370DB00107865 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B8CDD0118C370DB00107865 /* main.c */; };
-		3B8CDD0C18C3726600107865 /* Server.c in Sources */ = {isa = PBXBuildFile; fileRef = 3B8CDD0B18C3726600107865 /* Server.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,15 +44,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3B24684618CCA1DE000E7711 /* SecureClient.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SecureClient.c; sourceTree = "<group>"; };
-		3B24684818CCB4E7000E7711 /* SecurePacket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecurePacket.h; sourceTree = "<group>"; };
-		3B24684918CCB4F1000E7711 /* SecurePacket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SecurePacket.c; sourceTree = "<group>"; };
+		3B24689E18CDA4CE000E7711 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		3B24689F18CDA4CE000E7711 /* OpenSSLHelper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OpenSSLHelper.c; sourceTree = "<group>"; };
+		3B2468A018CDA4CE000E7711 /* OpenSSLHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSSLHelper.h; sourceTree = "<group>"; };
+		3B2468A118CDA4CE000E7711 /* SecureClient.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SecureClient.c; sourceTree = "<group>"; };
+		3B2468A218CDA4CE000E7711 /* SecureClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SecureClient.h; sourceTree = "<group>"; };
+		3B2468A318CDA4CE000E7711 /* SecurePacket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SecurePacket.c; sourceTree = "<group>"; };
+		3B2468A418CDA4CE000E7711 /* SecurePacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SecurePacket.h; sourceTree = "<group>"; };
 		3B2724C118CC68A8006C00C2 /* openssl.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openssl.xcodeproj; path = "openssl-xcode/openssl.xcodeproj"; sourceTree = "<group>"; };
-		3B2724D218CC9AB9006C00C2 /* SecureClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecureClient.h; sourceTree = "<group>"; };
 		3B8CDCFE18C370DB00107865 /* OpenSSLTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OpenSSLTests; sourceTree = BUILT_PRODUCTS_DIR; };
-		3B8CDD0118C370DB00107865 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		3B8CDD0A18C3725B00107865 /* Server.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Server.h; sourceTree = "<group>"; };
-		3B8CDD0B18C3726600107865 /* Server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Server.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +67,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3B24689D18CDA4CE000E7711 /* OpenSSLTests */ = {
+			isa = PBXGroup;
+			children = (
+				3B24689E18CDA4CE000E7711 /* main.c */,
+				3B24689F18CDA4CE000E7711 /* OpenSSLHelper.c */,
+				3B2468A018CDA4CE000E7711 /* OpenSSLHelper.h */,
+				3B2468A118CDA4CE000E7711 /* SecureClient.c */,
+				3B2468A218CDA4CE000E7711 /* SecureClient.h */,
+				3B2468A318CDA4CE000E7711 /* SecurePacket.c */,
+				3B2468A418CDA4CE000E7711 /* SecurePacket.h */,
+			);
+			path = OpenSSLTests;
+			sourceTree = "<group>";
+		};
 		3B27104218CC5FC3006C00C2 /* Lib */ = {
 			isa = PBXGroup;
 			children = (
@@ -86,8 +100,8 @@
 		3B8CDCF518C370DB00107865 = {
 			isa = PBXGroup;
 			children = (
+				3B24689D18CDA4CE000E7711 /* OpenSSLTests */,
 				3B27104218CC5FC3006C00C2 /* Lib */,
-				3B8CDD0018C370DB00107865 /* OpenSSLTests */,
 				3B8CDCFF18C370DB00107865 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -98,21 +112,6 @@
 				3B8CDCFE18C370DB00107865 /* OpenSSLTests */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		3B8CDD0018C370DB00107865 /* OpenSSLTests */ = {
-			isa = PBXGroup;
-			children = (
-				3B8CDD0118C370DB00107865 /* main.c */,
-				3B8CDD0A18C3725B00107865 /* Server.h */,
-				3B8CDD0B18C3726600107865 /* Server.c */,
-				3B2724D218CC9AB9006C00C2 /* SecureClient.h */,
-				3B24684618CCA1DE000E7711 /* SecureClient.c */,
-				3B24684818CCB4E7000E7711 /* SecurePacket.h */,
-				3B24684918CCB4F1000E7711 /* SecurePacket.c */,
-			);
-			name = OpenSSLTests;
-			path = WebServer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -182,10 +181,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B8CDD0C18C3726600107865 /* Server.c in Sources */,
-				3B24684A18CCB4F1000E7711 /* SecurePacket.c in Sources */,
-				3B8CDD0218C370DB00107865 /* main.c in Sources */,
-				3B24684718CCA1DE000E7711 /* SecureClient.c in Sources */,
+				3B2468A618CDA4CE000E7711 /* OpenSSLHelper.c in Sources */,
+				3B2468A518CDA4CE000E7711 /* main.c in Sources */,
+				3B2468A818CDA4CE000E7711 /* SecurePacket.c in Sources */,
+				3B2468A718CDA4CE000E7711 /* SecureClient.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
